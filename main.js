@@ -85,6 +85,7 @@ async function run_main(){
     winston.info({message: '   auto             - (or blank) attempts to automatically find CANUSB4'});
     winston.info({message: '   network          - uses tcp connection'});
     winston.info({message: '   serialPort=<XXX> - selects specific serial port (e.g. COM3)'});
+    winston.info({message: '   nodeNumber=<XXX> - specifies node number, skips interactive prompt'});
     winston.info({message: '   showserials      - just lists all serial ports, and terminates'});
     winston.info({message: '\n'});
     await utils.sleep(100);   // wait for printing
@@ -144,18 +145,28 @@ async function run_main(){
 		
 
     // This will prompt for the node number, and then run the tests
-    rl.question('\n Enter Node number > ', function(answer) {
-      RetrievedValues.data['enteredNodeNumber'] = parseInt(answer)
+    // If nodeNumber was provided via CLI, skip the interactive prompt
+    if (options.nodeNumber !== undefined) {
+      RetrievedValues.data['enteredNodeNumber'] = options.nodeNumber;
       winston.info({message: ' '});
+      winston.info({message: 'VLCB: ==== Node number from CLI - ' + options.nodeNumber});
+      winston.info({message: ' '});
+      RetrievedValues.setNodeNumber(options.nodeNumber);
+      runtests();
+    } else {
+      rl.question('\n Enter Node number > ', function(answer) {
+        RetrievedValues.data['enteredNodeNumber'] = parseInt(answer)
+        winston.info({message: ' '});
 			if (Number.isNaN(RetrievedValues.data.enteredNodeNumber)){
 				winston.info({message: 'VLCB: ==== No Node number entered'});
 			} else {
 	      winston.info({message: 'VLCB: ==== Node number entered - ' + RetrievedValues.getNodeNumber()});
 			}
-      winston.info({message: ' '});
-      RetrievedValues.setNodeNumber(RetrievedValues.data.enteredNodeNumber)
-      runtests();                        // ok - now run actual tests.........
-    });
+        winston.info({message: ' '});
+        RetrievedValues.setNodeNumber(RetrievedValues.data.enteredNodeNumber)
+        runtests();                        // ok - now run actual tests.........
+      });
+    }
   } else {
     // end app if no connection found (this condition should never occur, but still.....)
     winston.info({message: '\nnVLCB: ******** ERROR: no connection found - terminating \n'});
@@ -342,6 +353,10 @@ function getCommandLineOptions(){
 			const myArray = process.argv[item].split("=");
       options["connection"] = 'serialPort'
 			options["serialPort"] = myArray[1]
+    }
+    if (process.argv[item].toLowerCase().includes('nodenumber')){
+			const myArray = process.argv[item].split("=");
+      options["nodeNumber"] = parseInt(myArray[1]);
     }
 	}
 
