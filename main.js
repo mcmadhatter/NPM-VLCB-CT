@@ -318,7 +318,10 @@ async function runtests() {
   // archive all results into zip file ...
 	files.copyFiles(RetrievedValues.data.DescriptorIdentity);
 	winston.info({message: '\n\nVLCB: End\n\n\n'});
-	
+
+	await utils.sleep(500);		// delay to allow final log writes
+	process.exit(RetrievedValues.data.TestsFailed > 0 ? 1 : 0);
+
 }	// endRunTests()
 
 
