@@ -110,7 +110,7 @@ exports.sleep = function sleep(timeout) {
 	
 exports.findCANUSB4 = function findCANUSB4(canbus4_info) {
   winston.debug({message: 'utils: CANUSB4:'});
-  SerialPort.list().then(ports => {
+  return SerialPort.list().then(ports => {
     ports.forEach(function(port) {
       winston.debug({message: 'utils: CANUSB4: checking port: ' + JSON.stringify(port)});
       if (port.vendorId != undefined && port.vendorId.toString().toUpperCase() == '04D8' && port.productId.toString().toUpperCase() == 'F80C') {
@@ -123,7 +123,7 @@ exports.findCANUSB4 = function findCANUSB4(canbus4_info) {
 
 exports.checkSerialPort = function checkSerialPort(serialPort_info) {
   var portCount = 0;
-  SerialPort.list().then(ports => {
+  return SerialPort.list().then(ports => {
     ports.forEach(function(port) {
       portCount++
       winston.debug({message: 'utils: serial port found: ' + JSON.stringify(port)});

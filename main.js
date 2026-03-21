@@ -104,8 +104,7 @@ async function run_main(){
 	}
 	if(options.connection == 'auto'){
     let canbus4_info = {'path': null}  // seems we have to create an object so it passes by ref
-    utils.findCANUSB4(canbus4_info)
-    await utils.sleep(500);   // wait for serial port check to complete
+    await utils.findCANUSB4(canbus4_info)
     winston.debug({message: '---- canusb4 result ' + JSON.stringify(canbus4_info)});
     if (canbus4_info.path) {
       connection = new SerialGC.SerialGC(canbus4_info.path)
@@ -117,8 +116,7 @@ async function run_main(){
 	}
 	if(options.connection == 'serialPort'){
     let serialPort_info = {'path': options.serialPort}
-		utils.checkSerialPort(serialPort_info)
-    await utils.sleep(500);   // wait for serial port check to complete
+		await utils.checkSerialPort(serialPort_info)
 		if(serialPort_info.valid){
 			connection = new SerialGC.SerialGC(serialPort_info.path)
 		} else {
