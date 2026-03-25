@@ -94,7 +94,7 @@ async function run_main(){
 
   if(options.showSerials){
     utils.checkSerialPort()
-    await utils.sleep(500);   // wait for serial port check to complete
+    await utils.sleep(2000);   // wait for serial port check to complete (RPi3 USB enumeration needs >1s)
 		process.exit()
 	}
 
@@ -106,7 +106,7 @@ async function run_main(){
 	if(options.connection == 'auto'){
     let canbus4_info = {'path': null}  // seems we have to create an object so it passes by ref
     utils.findCANUSB4(canbus4_info)
-    await utils.sleep(500);   // wait for serial port check to complete
+    await utils.sleep(2000);   // wait for serial port check to complete (RPi3 USB enumeration needs >1s)
     winston.debug({message: '---- canusb4 result ' + JSON.stringify(canbus4_info)});
     if (canbus4_info.path) {
       connection = new SerialGC.SerialGC(canbus4_info.path)
@@ -119,7 +119,7 @@ async function run_main(){
 	if(options.connection == 'serialPort'){
     let serialPort_info = {'path': options.serialPort}
 		utils.checkSerialPort(serialPort_info)
-    await utils.sleep(500);   // wait for serial port check to complete
+    await utils.sleep(2000);   // wait for serial port check to complete (RPi3 USB enumeration needs >1s)
 		if(serialPort_info.valid){
 			connection = new SerialGC.SerialGC(serialPort_info.path)
 		} else {
